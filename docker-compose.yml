@@ -15,7 +15,6 @@ x-api-base: &api-base
     - rails_cache:/app/tmp/cache
     - history:/usr/local/hist
   environment:
-    RAILS_ENV: ${RAILS_ENV:-development}
     DATABASE_URL: postgres://postgres:postgres@db:5432
     MALLOC_ARENA_MAX: 2
     WEB_CONCURRENCY: ${WEB_CONCURRENCY:-1}
@@ -46,7 +45,6 @@ services:
   db:
     image: postgres:15
     volumes:
-      - .psqlrc:/root/.psqlrc:ro
       - postgres:/var/lib/postgresql/data
       - history:/usr/local/hist
     environment:

@@ -1,0 +1,10 @@
+fix: true
+parallel: true
+format: progress
+ruby_version: 3.2.1
+
+ignore:
+  - "db/schema.rb"
+
+extend_config:
+  - .standard_rubocop_extensions.yml
