@@ -1,0 +1,65 @@
+version: "3.9"
+
+x-api-base: &api-base
+  build:
+    context: ./api
+    args:
+      RUBY_VERSION: "3.2.1"
+      PG_MAJOR: "15"
+  image: project-fullstack-api:1.0.0
+  stdin_open: true
+  tty: true
+  volumes:
+    - ./api:/app:cached
+    - bundle:/usr/local/bundle
+    - rails_cache:/app/tmp/cache
+    - history:/usr/local/hist
+  environment:
+    RAILS_ENV: ${RAILS_ENV:-development}
+    DATABASE_URL: postgres://postgres:postgres@db:5432
+    MALLOC_ARENA_MAX: 2
+    WEB_CONCURRENCY: ${WEB_CONCURRENCY:-1}
+    BOOTSNAP_CACHE_DIR: /usr/local/bundle/_bootsnap
+    XDG_DATA_HOME: /app/tmp/cache
+    HISTFILE: /usr/local/hist/.bash_history
+    PSQL_HISTFILE: /usr/local/hist/.psql_history
+    IRB_HISTFILE: /usr/local/hist/.irb_history
+    EDITOR: vi
+  tmpfs:
+    - /tmp
+    - /app/tmp/pids
+  depends_on:
+    db:
+      condition: service_healthy
+
+services:
+  api-bash-shell:
+    <<: *api-base
+    command: /bin/bash
+
+  api:
+    <<: *api-base
+    command: bundle exec rails server -b 0.0.0.0
+    ports:
+      - "3000:3000"
+
+  db:
+    image: postgres:15
+    volumes:
+      - .psqlrc:/root/.psqlrc:ro
+      - postgres:/var/lib/postgresql/data
+      - history:/usr/local/hist
+    environment:
+      PSQL_HISTFILE: /usr/local/hist/.psql_history
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: pg_isready -U postgres -h 127.0.0.1
+      interval: 5s
+
+volumes:
+  bundle:
+  history:
+  rails_cache:
+  postgres:
