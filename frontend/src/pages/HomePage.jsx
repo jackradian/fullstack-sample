@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import { getMovies } from "../services/movieApi";
-import YoutubeIframe from "../components/YoutubeIframe";
+import Movie from "../components/Movie";
+import styled from "@emotion/styled";
+
+const HomePageDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 export default function HomePage() {
   const [movies, setMovies] = useState([]);
@@ -10,13 +16,14 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div>
+    <HomePageDiv>
       {movies.map((movie) => (
-        <div key={movie.id}>
-          <YoutubeIframe url={movie.url} />
-          <p>{movie.username}</p>
-        </div>
+        <Movie
+          key={movie.id}
+          url={movie.url}
+          uploadedUsername={movie.username}
+        />
       ))}
-    </div>
+    </HomePageDiv>
   );
 }
