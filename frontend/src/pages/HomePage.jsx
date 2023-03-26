@@ -17,6 +17,7 @@ export default function HomePage() {
 
   return (
     <HomePageDiv>
+      {movies.length === 0 && <div>Have 0 movie</div>}
       {movies.map((movie) => (
         <Movie
           key={movie.id}

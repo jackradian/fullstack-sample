@@ -8,3 +8,7 @@ export const getStoredUserAuth = () => {
   }
   return DEFAULT_USER_AUTH;
 };
+
+export const clearStoredUserAuth = () => {
+  window.localStorage.removeItem("UserAuth");
+};
