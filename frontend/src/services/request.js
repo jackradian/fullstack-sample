@@ -9,9 +9,12 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   async (config) => {
-    const { accessToken } = getStoredUserAuth();
+    const { accessToken, refreshToken } = getStoredUserAuth();
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    if (refreshToken) {
+      config.headers["X-Refresh-Token"] = refreshToken;
     }
     return config;
   },
