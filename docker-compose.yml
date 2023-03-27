@@ -32,6 +32,19 @@ x-api-base: &api-base
     db:
       condition: service_healthy
 
+x-frontend-base: &frontend-base
+  build:
+    context: ./frontend
+    args:
+      NODE_VERSION: "18.15"
+  image: project-fullstack-frontend:1.0.0
+  volumes:
+    - ./frontend:/app
+    - node_modules:/app/node_modules
+    - history:/usr/local/hist
+  environment:
+    EDITOR: vi
+
 services:
   api-bash-shell:
     <<: *api-base
@@ -57,8 +70,19 @@ services:
       test: pg_isready -U postgres -h 127.0.0.1
       interval: 5s
 
+  frontend-bash-shell:
+    <<: *frontend-base
+    command: /bin/bash
+
+  frontend:
+    <<: *frontend-base
+    command: npm run dev -- --host
+    ports:
+      - "5173:5173"
+
 volumes:
   bundle:
   history:
   rails_cache:
   postgres:
+  node_modules:
