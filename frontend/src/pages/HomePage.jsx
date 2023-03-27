@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { getMovies } from "../services/movieApi";
 import Movie from "../components/Movie";
 import styled from "@emotion/styled";
+import { errorContext } from "../contexts/ErrorContext";
 
 const HomePageDiv = styled.div`
   display: flex;
@@ -10,9 +11,14 @@ const HomePageDiv = styled.div`
 
 export default function HomePage() {
   const [movies, setMovies] = useState([]);
+  const error = useContext(errorContext);
 
   useEffect(() => {
-    getMovies().then((res) => setMovies(res.movies));
+    getMovies()
+      .then((res) => setMovies(res.movies))
+      .catch((err) => {
+        error.addError(err.response.data);
+      });
   }, []);
 
   return (

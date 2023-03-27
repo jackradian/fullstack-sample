@@ -5,23 +5,28 @@ import HomePage from "./pages/HomePage";
 import ShareMoviePage from "./pages/ShareMoviePage";
 import AuthProvider from "./contexts/AuthContext";
 import { authContext } from "./contexts/AuthContext";
+import ErrorProvider from "./contexts/ErrorContext";
+import ErrorNotification from "./components/ErrorNotification";
 
 export default function App() {
   return (
     <AuthProvider>
-      <Routes>
-        <Route element={<BaseLayout />}>
-          <Route path='/' element={<HomePage />} />
-          <Route
-            path='/share'
-            element={
-              <RequireAuth>
-                <ShareMoviePage />
-              </RequireAuth>
-            }
-          />
-        </Route>
-      </Routes>
+      <ErrorProvider>
+        <Routes>
+          <Route element={<BaseLayout />}>
+            <Route path='/' element={<HomePage />} />
+            <Route
+              path='/share'
+              element={
+                <RequireAuth>
+                  <ShareMoviePage />
+                </RequireAuth>
+              }
+            />
+          </Route>
+        </Routes>
+        <ErrorNotification />
+      </ErrorProvider>
     </AuthProvider>
   );
 }

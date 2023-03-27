@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import styled from "@emotion/styled";
 import { shareMovie } from "../services/movieApi";
 import { useNavigate } from "react-router-dom";
+import { errorContext } from "../contexts/ErrorContext";
 
 const ShareMoviePageDiv = styled.div`
   display: flex;
@@ -26,13 +27,18 @@ const ShareMoviePageDiv = styled.div`
 
 export default function ShareMoviePage() {
   const navigate = useNavigate();
+  const error = useContext(errorContext);
   const [url, setUrl] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    shareMovie(url).then((res) => {
-      navigate("/");
-    });
+    shareMovie(url)
+      .then(() => {
+        navigate("/");
+      })
+      .catch((err) => {
+        error.addError(err.response.data);
+      });
   };
 
   return (

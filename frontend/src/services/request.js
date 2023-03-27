@@ -31,7 +31,6 @@ instance.interceptors.response.use(
     const statusCode = error.response?.status;
     if (statusCode === 401) {
       clearStoredUserAuth();
-      window.location.href = "/";
     }
     return Promise.reject(error);
   }

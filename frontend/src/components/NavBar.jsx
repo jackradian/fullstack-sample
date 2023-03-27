@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import { login, logout } from "../services/authApi";
 import { authContext } from "../contexts/AuthContext";
+import { errorContext } from "../contexts/ErrorContext";
 import styled from "@emotion/styled";
 
 const NavBarDiv = styled.div`
@@ -57,6 +58,7 @@ export default function NavBar() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const auth = useContext(authContext);
+  const error = useContext(errorContext);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -69,14 +71,18 @@ export default function NavBar() {
         });
       })
       .catch((err) => {
-        console.log("Error: ", err);
+        error.addError(err.response.data);
       });
   };
 
   const handleLogout = () => {
-    logout().then(() => {
-      auth.setUnauthStatus();
-    });
+    logout()
+      .then(() => {
+        auth.setUnauthStatus();
+      })
+      .catch((err) => {
+        error.addError(err.response.data);
+      });
   };
 
   return (
