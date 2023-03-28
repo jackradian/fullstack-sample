@@ -9,6 +9,11 @@ Rails.application.routes.draw do
     post "login/refresh", to: "sessions#refresh"
     resources :movies, only: [:index, :create] do
       get "my_list", on: :collection
+      member do
+        put "upvote", to: "votes#upvote"
+        put "downvote", to: "votes#downvote"
+        delete "remove_vote", to: "votes#remove"
+      end
     end
   end
 end
