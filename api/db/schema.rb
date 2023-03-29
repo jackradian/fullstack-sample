@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_03_28_150601) do
+ActiveRecord::Schema[7.0].define(version: 2023_03_29_053422) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,6 +19,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_03_28_150601) do
     t.string "url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "upvotes_count", default: 0, null: false
+    t.integer "downvotes_count", default: 0, null: false
     t.index ["created_at"], name: "index_movies_on_created_at"
     t.index ["user_id"], name: "index_movies_on_user_id"
   end

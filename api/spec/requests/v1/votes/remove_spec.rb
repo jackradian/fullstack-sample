@@ -25,21 +25,18 @@ RSpec.describe "DELETE /v1/movies/:id/remove_vote", type: :request do
 
       context "when the user did not vote the movie" do
         it "does not delete any vote" do
-          expect {request}.not_to change(Vote, :count)
+          expect { request }.not_to change(Vote, :count)
         end
       end
 
       context "when the user has already voted the movie" do
-        let!(:vote) {
+        it "deletes the vote" do
           FactoryBot.create(
             :vote,
             user: user,
             movie: movie
           )
-        }
-
-        it "deletes the vote" do
-          expect {request}.to change(Vote, :count).by(-1)
+          expect { request }.to change(Vote, :count).by(-1)
         end
       end
     end

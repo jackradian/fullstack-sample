@@ -3,7 +3,7 @@
 # Table name: votes
 #
 #  id         :bigint           not null, primary key
-#  vote_type  :integer          default(0), not null
+#  vote_type  :integer          default("upvote"), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  movie_id   :bigint           not null
@@ -53,5 +53,63 @@ RSpec.describe Vote, type: :model do
       user_id: existing_vote.user_id,
       movie_id: existing_vote.movie_id
     )).to be_invalid
+  end
+
+  describe "after_create #increase_votes_count" do
+    it "increments upvotes_count if vote_type is upvote" do
+      movie = FactoryBot.create(:movie)
+
+      expect {
+        FactoryBot.create(:vote, movie: movie, vote_type: described_class.vote_types[:upvote])
+      }.to change(movie, :upvotes_count).by(1)
+    end
+
+    it "increments downvotes_count if vote_type is downvote" do
+      movie = FactoryBot.create(:movie)
+
+      expect {
+        FactoryBot.create(:vote, movie: movie, vote_type: described_class.vote_types[:downvote])
+      }.to change(movie, :downvotes_count).by(1)
+    end
+  end
+
+  describe "after_update #update_votes_count" do
+    it "decrements upvotes_count and increments downvotes_count if vote_type change from upvote to downvote" do
+      movie = FactoryBot.create(:movie)
+      vote = FactoryBot.create(:vote, movie: movie, vote_type: described_class.vote_types[:upvote])
+
+      expect {
+        vote.update(vote_type: described_class.vote_types[:downvote])
+      }.to change(movie, :upvotes_count).by(-1).and change(movie, :downvotes_count).by(1)
+    end
+
+    it "decrements downvotes_count and increments upvotes_count if vote_type change from downvote to upvote" do
+      movie = FactoryBot.create(:movie)
+      vote = FactoryBot.create(:vote, movie: movie, vote_type: described_class.vote_types[:downvote])
+
+      expect {
+        vote.update(vote_type: described_class.vote_types[:upvote])
+      }.to change(movie, :downvotes_count).by(-1).and change(movie, :upvotes_count).by(1)
+    end
+  end
+
+  describe "after_destroy #decrement_votes_count" do
+    it "decrements upvotes_count if vote_type is upvote" do
+      movie = FactoryBot.create(:movie)
+      vote = FactoryBot.create(:vote, movie: movie, vote_type: described_class.vote_types[:upvote])
+
+      expect {
+        vote.destroy
+      }.to change(movie, :upvotes_count).by(-1)
+    end
+
+    it "decrements downvotes_count if vote_type is downvote" do
+      movie = FactoryBot.create(:movie)
+      vote = FactoryBot.create(:vote, movie: movie, vote_type: described_class.vote_types[:downvote])
+
+      expect {
+        vote.destroy
+      }.to change(movie, :downvotes_count).by(-1)
+    end
   end
 end

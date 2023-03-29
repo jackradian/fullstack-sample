@@ -3,7 +3,7 @@
 # Table name: votes
 #
 #  id         :bigint           not null, primary key
-#  vote_type  :integer          default(0), not null
+#  vote_type  :integer          default("upvote"), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  movie_id   :bigint           not null
@@ -24,6 +24,6 @@ FactoryBot.define do
   factory :vote do
     association :user
     association :movie
-    vote_type { 0 }
+    vote_type { Vote.vote_types[:upvote] }
   end
 end

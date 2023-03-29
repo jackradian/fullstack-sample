@@ -2,11 +2,13 @@
 #
 # Table name: movies
 #
-#  id         :bigint           not null, primary key
-#  url        :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  user_id    :bigint           not null
+#  id              :bigint           not null, primary key
+#  downvotes_count :integer          default(0), not null
+#  upvotes_count   :integer          default(0), not null
+#  url             :string
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  user_id         :bigint           not null
 #
 # Indexes
 #
@@ -20,6 +22,16 @@
 class Movie < ApplicationRecord
   belongs_to :user
   has_many :votes, dependent: :destroy
+  has_many :upvotes,
+    -> { where vote_type: :upvote },
+    class_name: "Vote",
+    inverse_of: :movie,
+    dependent: :destroy
+  has_many :downvotes,
+    -> { where vote_type: :downvote },
+    class_name: "Vote",
+    inverse_of: :movie,
+    dependent: :destroy
 
   validates :url, presence: true
   validates :url, format: {

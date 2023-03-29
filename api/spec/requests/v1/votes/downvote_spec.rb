@@ -40,7 +40,7 @@ RSpec.describe "PUT /v1/movies/:id/downvote", type: :request do
         }
 
         it "does not create a vote" do
-          expect {request}.not_to change(Vote, :count)
+          expect { request }.not_to change(Vote, :count)
         end
 
         it "does not change vote_type of existing vote" do
@@ -62,7 +62,7 @@ RSpec.describe "PUT /v1/movies/:id/downvote", type: :request do
         }
 
         it "does not create a vote" do
-          expect {request}.not_to change(Vote, :count)
+          expect { request }.not_to change(Vote, :count)
         end
 
         it "changes vote_type to downvote" do

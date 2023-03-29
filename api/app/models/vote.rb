@@ -3,7 +3,7 @@
 # Table name: votes
 #
 #  id         :bigint           not null, primary key
-#  vote_type  :integer          default(0), not null
+#  vote_type  :integer          default("upvote"), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  movie_id   :bigint           not null
@@ -28,4 +28,39 @@ class Vote < ApplicationRecord
 
   validates :vote_type, presence: true, inclusion: {in: vote_types.keys}
   validates :user_id, uniqueness: {scope: :movie_id}
+
+  after_create :increment_votes_count
+  after_update :update_votes_count
+  after_destroy :decrement_votes_count
+
+  private
+
+  def increment_votes_count
+    if upvote?
+      movie.increment(:upvotes_count)
+    elsif downvote?
+      movie.increment(:downvotes_count)
+    end
+    movie.save
+  end
+
+  def update_votes_count
+    if vote_type_previously_changed?(from: "upvote", to: "downvote")
+      movie.decrement(:upvotes_count)
+      movie.increment(:downvotes_count)
+    elsif vote_type_previously_changed?(from: "downvote", to: "upvote")
+      movie.decrement(:downvotes_count)
+      movie.increment(:upvotes_count)
+    end
+    movie.save
+  end
+
+  def decrement_votes_count
+    if upvote?
+      movie.decrement(:upvotes_count)
+    elsif downvote?
+      movie.decrement(:downvotes_count)
+    end
+    movie.save
+  end
 end
