@@ -11,7 +11,7 @@ class V1::VotesController < V1::BaseController
     else
       current_user.votes.create!(movie_id: @movie.id, vote_type: :upvote)
     end
-    render json: {message: "Upvoted"}
+    render_movie_vote_count
   end
 
   def downvote
@@ -24,13 +24,13 @@ class V1::VotesController < V1::BaseController
     else
       current_user.votes.create!(movie_id: @movie.id, vote_type: :downvote)
     end
-    render json: {message: "Downvoted"}
+    render_movie_vote_count
   end
 
   def remove
     if @vote.present?
       @vote.destroy!
-      render json: {message: "Vote removed"}
+      render_movie_vote_count
     else
       render_errors("No vote to remove", :not_found)
     end
@@ -41,5 +41,11 @@ class V1::VotesController < V1::BaseController
   def get_movie_and_existing_vote
     @movie = Movie.find(params[:id])
     @vote = current_user.votes.find_by(movie_id: @movie.id)
+  end
+
+  def render_movie_vote_count
+    render json: MovieSerializer.new(
+      only: [:upvotesCount, :downvotesCount]
+    ).serialize_to_json(@movie.reload)
   end
 end

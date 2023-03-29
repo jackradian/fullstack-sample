@@ -19,9 +19,11 @@ RSpec.describe "PUT /v1/movies/:id/upvote", type: :request do
           expect(response).to have_http_status(:success)
         end
 
-        it "returns upvoted message" do
+        it "returns movie vote count", :aggregate_failures do
           request
-          expect(json[:message]).to eq("Upvoted")
+          movie.reload
+          expect(json[:upvotesCount]).to eq(movie.upvotes_count)
+          expect(json[:downvotesCount]).to eq(movie.downvotes_count)
         end
 
         it "creates a vote" do
@@ -69,6 +71,13 @@ RSpec.describe "PUT /v1/movies/:id/upvote", type: :request do
         it "returns http success" do
           request
           expect(response).to have_http_status(:success)
+        end
+
+        it "returns movie vote count", :aggregate_failures do
+          request
+          movie.reload
+          expect(json[:upvotesCount]).to eq(movie.upvotes_count)
+          expect(json[:downvotesCount]).to eq(movie.downvotes_count)
         end
 
         it "does not create a vote" do

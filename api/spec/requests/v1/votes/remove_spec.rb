@@ -27,9 +27,11 @@ RSpec.describe "DELETE /v1/movies/:id/remove_vote", type: :request do
           expect(response).to have_http_status(:success)
         end
 
-        it "returns vote removed message" do
+        it "returns movie vote count", :aggregate_failures do
           request
-          expect(json[:message]).to eq("Vote removed")
+          movie.reload
+          expect(json[:upvotesCount]).to eq(movie.upvotes_count)
+          expect(json[:downvotesCount]).to eq(movie.downvotes_count)
         end
 
         it "deletes the vote" do
