@@ -3,6 +3,10 @@ class V1::VotesController < V1::BaseController
 
   def upvote
     if @vote.present?
+      if @vote.upvote?
+        render_errors("Already upvoted", :forbidden)
+        return
+      end
       @vote.update!(vote_type: :upvote)
     else
       current_user.votes.create!(movie_id: @movie.id, vote_type: :upvote)
@@ -12,6 +16,10 @@ class V1::VotesController < V1::BaseController
 
   def downvote
     if @vote.present?
+      if @vote.downvote?
+        render_errors("Already downvoted", :forbidden)
+        return
+      end
       @vote.update!(vote_type: :downvote)
     else
       current_user.votes.create!(movie_id: @movie.id, vote_type: :downvote)
@@ -22,8 +30,10 @@ class V1::VotesController < V1::BaseController
   def remove
     if @vote.present?
       @vote.destroy!
+      render json: {message: "Vote removed"}
+    else
+      render_errors("No vote to remove", :not_found)
     end
-    render json: {message: "Vote removed"}
   end
 
   private

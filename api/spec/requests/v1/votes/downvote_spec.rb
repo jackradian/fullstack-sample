@@ -13,17 +13,17 @@ RSpec.describe "PUT /v1/movies/:id/downvote", type: :request do
       let(:movie) { FactoryBot.create(:movie) }
       let(:movie_id) { movie.id }
 
-      it "returns http success" do
-        request
-        expect(response).to have_http_status(:success)
-      end
-
-      it "returns downvoted message" do
-        request
-        expect(json[:message]).to eq("Downvoted")
-      end
-
       context "when the user did not vote the movie" do
+        it "returns http success" do
+          request
+          expect(response).to have_http_status(:success)
+        end
+
+        it "returns downvoted message" do
+          request
+          expect(json[:message]).to eq("Downvoted")
+        end
+
         it "creates a vote" do
           expect { request }.to change(Vote, :count).by(1)
         end
@@ -38,6 +38,11 @@ RSpec.describe "PUT /v1/movies/:id/downvote", type: :request do
             vote_type: :downvote
           )
         }
+
+        it "returns http forbidden" do
+          request
+          expect(response).to have_http_status(:forbidden)
+        end
 
         it "does not create a vote" do
           expect { request }.not_to change(Vote, :count)
@@ -60,6 +65,11 @@ RSpec.describe "PUT /v1/movies/:id/downvote", type: :request do
             vote_type: :upvote
           )
         }
+
+        it "returns http success" do
+          request
+          expect(response).to have_http_status(:success)
+        end
 
         it "does not create a vote" do
           expect { request }.not_to change(Vote, :count)

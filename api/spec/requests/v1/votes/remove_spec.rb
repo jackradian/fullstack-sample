@@ -13,30 +13,38 @@ RSpec.describe "DELETE /v1/movies/:id/remove_vote", type: :request do
       let(:movie) { FactoryBot.create(:movie) }
       let(:movie_id) { movie.id }
 
-      it "returns http success" do
-        request
-        expect(response).to have_http_status(:success)
-      end
-
-      it "returns vote removed message" do
-        request
-        expect(json[:message]).to eq("Vote removed")
-      end
-
-      context "when the user did not vote the movie" do
-        it "does not delete any vote" do
-          expect { request }.not_to change(Vote, :count)
-        end
-      end
-
       context "when the user has already voted the movie" do
-        it "deletes the vote" do
+        before do
           FactoryBot.create(
             :vote,
             user: user,
             movie: movie
           )
+        end
+
+        it "returns http success" do
+          request
+          expect(response).to have_http_status(:success)
+        end
+
+        it "returns vote removed message" do
+          request
+          expect(json[:message]).to eq("Vote removed")
+        end
+
+        it "deletes the vote" do
           expect { request }.to change(Vote, :count).by(-1)
+        end
+      end
+
+      context "when the user did not vote the movie" do
+        it "returns http not found" do
+          request
+          expect(response).to have_http_status(:not_found)
+        end
+
+        it "does not delete any vote" do
+          expect { request }.not_to change(Vote, :count)
         end
       end
     end

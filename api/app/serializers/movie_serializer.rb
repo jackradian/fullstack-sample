@@ -20,9 +20,17 @@
 #  fk_rails_...  (user_id => users.id)
 #
 class MovieSerializer < Panko::Serializer
-  attributes :id, :url, :username
+  attributes :id, :url, :username, :upvotesCount, :downvotesCount
 
   def username
     object.user.username
+  end
+
+  def upvotesCount
+    object.upvotes_count
+  end
+
+  def downvotesCount
+    object.downvotes_count
   end
 end
