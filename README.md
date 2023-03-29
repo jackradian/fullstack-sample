@@ -70,3 +70,14 @@ It will be hosted on http://localhost:5173
 Use `Ctrl` + `C` or use command `docker compose down`
 
 ## Run test
+
+```sh
+docker compose run --rm api-bash-shell rspec
+```
+
+## Test user info
+
+```
+username: user1
+password: password
+```
