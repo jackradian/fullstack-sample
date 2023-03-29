@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import VoteButtonsGroup from "./VoteButtonsGroup";
 
 const MovieDiv = styled.div`
   margin-left: auto;
@@ -7,9 +8,19 @@ const MovieDiv = styled.div`
   width: 600px;
   display: flex;
   gap: 10px;
+  .info {
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
-export default function Movie({ url, uploadedUsername }) {
+export default function Movie({
+  id,
+  url,
+  username,
+  upvotesCount,
+  downvotesCount,
+}) {
   const getId = (urlString) => {
     const regExp =
       /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
@@ -32,7 +43,14 @@ export default function Movie({ url, uploadedUsername }) {
           allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share'
           allowFullScreen></iframe>
       </div>
-      <div>Uploaded by {uploadedUsername}</div>
+      <div className='info'>
+        <div>Uploaded by {username}</div>
+        <VoteButtonsGroup
+          movieId={id}
+          upvotesCount={upvotesCount}
+          downvotesCount={downvotesCount}
+        />
+      </div>
     </MovieDiv>
   );
 }

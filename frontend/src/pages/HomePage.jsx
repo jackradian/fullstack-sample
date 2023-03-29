@@ -25,11 +25,7 @@ export default function HomePage() {
     <HomePageDiv>
       {movies.length === 0 && <div>Have 0 movie</div>}
       {movies.map((movie) => (
-        <Movie
-          key={movie.id}
-          url={movie.url}
-          uploadedUsername={movie.username}
-        />
+        <Movie key={movie.id} {...movie} />
       ))}
     </HomePageDiv>
   );
