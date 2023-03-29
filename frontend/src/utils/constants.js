@@ -4,3 +4,8 @@ export const DEFAULT_USER_AUTH = {
   accessToken: "",
   refreshToken: "",
 };
+
+export const VOTE_TYPE = {
+  UPVOTE: 0,
+  DOWNVOTE: 1,
+};

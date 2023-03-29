@@ -20,6 +20,7 @@ export default function Movie({
   username,
   upvotesCount,
   downvotesCount,
+  myVote,
 }) {
   const getId = (urlString) => {
     const regExp =
@@ -49,6 +50,7 @@ export default function Movie({
           movieId={id}
           upvotesCount={upvotesCount}
           downvotesCount={downvotesCount}
+          myVote={myVote}
         />
       </div>
     </MovieDiv>
